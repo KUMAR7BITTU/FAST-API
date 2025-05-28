@@ -142,3 +142,20 @@ async def func1(item:str):
 @app_name.get('/func2')
 async def func2(name:str = Depends(func1)):
     return {"message":name}
+
+
+#Error Handling
+# @app_name.get('/error/handling')
+# async def handle_error(item:int):
+#     if item == 2:
+#         return HTTPException(status_code=404,detail="Item is equal to 2 try another value")
+#     return {"message":item}
+
+items = [1,2,3,4,5,6,7]
+@app_name.get('/error/handling')
+async def handle_error(item:int):
+    if item not in items:
+        return HTTPException(status_code=404,detail=f"{item} is not present in items container.")
+    return {"message":item}
+
+
