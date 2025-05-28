@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from typing import Union # To print default value in query parameter
+from enum import Enum
 
 app_name = FastAPI()
 
@@ -21,7 +23,34 @@ async def path_fun1(Item):
     var_name = {"path_variable":Item}
     return (var_name)
 
+# Path parameter
+# @app_name.get('/query')
+# async def query_fun(roll_no:int, name:Union[str,None]="bittu"):
+#     var_name = {"name":name,"roll_no":roll_no}
+#     return (var_name)
+
 @app_name.get('/query')
-async def query_fun(name:str, roll_no:int):
+async def query_fun(roll_no:int=0, name:str="bittu"):
     var_name = {"name":name,"roll_no":roll_no}
     return (var_name)
+
+
+class Choice_Names(str,Enum):
+    one = "one"
+    two = "two"
+    three = "three"
+
+
+# @app_name.get('/models/{model_name}')
+# async def get_model(model_name:Choice_Names):
+#     return (model_name)
+
+@app_name.get('/models/{model_name}')
+async def get_model(model_name=Choice_Names):
+    if model_name == Choice_Names.one:
+        return {"model_name":model_name,"message":"Calling one!"}
+    
+    if model_name == Choice_Names.two:
+        return {"model_name":model_name,"message":"Calling two"}
+    
+    return {"model_name":model_name,"message":"Calling three"}
