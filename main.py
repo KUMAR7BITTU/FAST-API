@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Form, File
+from fastapi import FastAPI, Query, Form, File, UploadFile, HTTPException, Depends
 from typing import Union, Annotated # To print default value in query parameter
 from enum import Enum
 from pydantic import BaseModel # To make schema
@@ -114,3 +114,31 @@ class vipan(BaseModel):
 async def form_data2(items:vipan):
     return {"items":items}
 
+# file upload
+@app_name.post('/file/upload')
+async def file_bytes_len(file : bytes = File()):
+    return {"file":len(file)}
+
+@app_name.post('/file/upload1')
+async def file_upload(file:UploadFile):
+    return {
+        "file":file.filename,
+        "size":file.size,
+        "file-content-type":file.headers.get("content-type")
+        }
+
+@app_name.post('/form/data/file_upload')
+async def formdata_upload(file1 : UploadFile, file2 : bytes = File(), name : str = Form()):
+    return {
+        "file1_name" : file1.filename,
+        "bytes_file" : len(file2),
+        "name" : name
+    }
+
+# Depend keyword
+async def func1(item:str):
+    return {"message":f"Hello, mrs {item}"}
+
+@app_name.get('/func2')
+async def func2(name:str = Depends(func1)):
+    return {"message":name}
