@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Form
+from fastapi import FastAPI, Query, Form, File
 from typing import Union, Annotated # To print default value in query parameter
 from enum import Enum
 from pydantic import BaseModel # To make schema
@@ -93,11 +93,24 @@ async def query_fun1(name : Annotated[str | None, Query(max_length=4)]=None):
     return (var_name)
 
 # form data
-@app_name.post("/login/")
+@app_name.post("/login/") 
 async def login(username : Annotated[str,Form()], password : Annotated[str,Form()]):
     return {"username":username, "password":password}
 
-@app_name.post('/form/data')
+@app_name.post('/form/data') # query
 async def form_data(username:str):
     return {"username":username}
+
+@app_name.post('/form/data1')
+async def form_data1(username : str = Form(), password : str = Form()):
+    return {"username":username, "password":password}
+
+class vipan(BaseModel):
+    one : str 
+    two : str 
+    three : int
+
+@app_name.post('/form/data2')
+async def form_data2(items:vipan):
+    return {"items":items}
 
